@@ -48,7 +48,7 @@ public class designInterface {
 
             if (a.matches("\\d{4}")){
                 int b = Integer.parseInt(a);
-                prt("Pin has been created: " + a);
+                prt("Pin has been created: " + b);
             } else {
                 prt("Please input only digits (Max: 4)");
                 createPin();
