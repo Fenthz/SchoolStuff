@@ -7,7 +7,7 @@ public class first {
     public static void main(String[] args){
         
         
-        designInterface.welcomeScreen(scan.nextLine());
+        designInterface.welcomeScreen();
        // accountList.assignID();
 
     }
