@@ -1,13 +1,14 @@
 package bank;
-import static bank.designInterface.prt; //imports the prt method so that i dont have to type designInterface.prt
+import static bank.DesignInterface.prt; //imports the prt method so that i dont have to type designInterface.prt
 import java.util.Scanner;
 
-public class first {
+public class First {
     static Scanner scan = new Scanner(System.in);
+    
     public static void main(String[] args){
         
         
-        designInterface.welcomeScreen();
+        DesignInterface.welcomeScreen();
        // accountList.assignID();
 
     }

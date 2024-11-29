@@ -1,58 +1,154 @@
 package bank;
 import java.util.Scanner;
 
-public class designInterface {
+public class DesignInterface {
     static Scanner scan = new Scanner(System.in);
+    static AccountManager accountManager = new AccountManager();
 
     //first screen the user sees
     public static void welcomeScreen() {
+        try {
         prt("---------------Welcome to FTL Bank---------------");
         prt("Do you have an account?" + "\n[1] Yes | [2] No");
+        int decision = Integer.parseInt(scan.nextLine());
 
-        String decision = scan.nextLine();
+        switch (decision){
+        case 1: //yes
+            loginScreen();
+            break;
+        case 2: //no
+            while (true){
+                try{
+                    prt("Do you want to create an account?" + "\n[1] Yes | [2] No");
+                    int a = Integer.parseInt(scan.nextLine());
+                        switch(a){
+                        case 1:
+                            makeAccountProc();
+                            return;
+                        case 2:
+                            welcomeScreen();
+                            return;
+                        default:    
+                            wrongDec("1 or 2");
+               }
+                }catch(NumberFormatException e){
+                    wrongDec("1 or 2");
+               }
 
-        if ("1".equalsIgnoreCase(decision)){
-                
-        } else if ("2".equalsIgnoreCase(decision)){
-            prt("Do you want to create an account?" + "\n[1] Yes | [2] No");
-            String a = scan.nextLine();
-
-                if ("1".equalsIgnoreCase(a)){
-                    accountCreation();
-                } else if ("2".equalsIgnoreCase(a)){
-                    welcomeScreen();
-                }
+            }
+        default:
+            wrongDec("1 or 2");
             
         }
-    }
-
-
-    //if user answers NO on having an account
-    public static void accountCreation(){
-        prt("---------------Create an Account---------------");
-        prt("Name (Last Name, First Name):");   
-        scan.nextLine();
-            try{
-        prt("Phone Number: ");   
-        scan.nextLine();
-            }catch (Exception e){
-            prt("Please provide a number");
+        } catch (NumberFormatException e) {
+            wrongDec("1 or 2");
+            welcomeScreen();
         }
-        createPin();
-
     }
 
-    public static void createPin(){
-            prt("Create Pin (4-digits): ");   
-            String a = scan.nextLine();
+      
+    private static void makeAccountProc() {
+     
+        AccountDetails account = AccountCreate.basicInformation();   
 
-            if (a.matches("\\d{4}")){
-                int b = Integer.parseInt(a);
-                prt("Pin has been created: " + b);
-            } else {
-                prt("Please input only digits (Max: 4)");
-                createPin();
+        String accountId = accountManager.createAccount(account.getName(), account.getNumber(), account.getPin(), account.getBalance());
+        
+         prt("Account created successfully! Your account ID is: " + accountId);
+         loginScreen();
+        }
+    
+
+    
+    public static void loginScreen(){
+        int a = 0; //max number of attempts or counter
+
+        while (a < 5){
+        prt("Enter your account ID:");
+        String accountId = scan.nextLine();
+
+
+        AccountDetails account = accountManager.getAccount(accountId);
+
+        if (!accountManager.accountExists(accountId)) {
+            a++;
+            prt("Account not found. Please try again.");
+            
+        }else {
+        prt("Enter your pin:");
+        String userPin = scan.nextLine();
+
+            if (userPin.equalsIgnoreCase(account.getPin())) {
+            prt("Login Success");
+            accountMenu(account); 
+            break;
+        }else {
+            a++;
+            prt("Incorrect pin. Please try again.");
+            if (a == 5) {
+                prt("Too many failed attempts. Exiting...");
+                return; //Exit after 5 failed attempts
             }
+        }
+    }
+}
+    }
+              
+
+    public static void accountMenu(AccountDetails account) {
+        int decision;
+        prt("---------------Welcome to FTL Bank---------------" + "\n---------------Hello, " + account.getName() + " " + "\n---------------What do you want to do today?---------------");
+        do {
+            prt("[1] Deposit" + "\n[2] Withdraw"+ "\n[3] Check Balance"+ "\n[4] Exit/Logout");
+            decision = Integer.parseInt(scan.nextLine());
+
+        switch (decision){
+        case 1: // Deposit
+            prt("Enter amount to deposit:");
+            int depositAmount = Integer.parseInt(scan.nextLine());
+            account.setBalance(account.getBalance() + depositAmount);
+            prt("Deposit successful! Your new balance is: " + account.getBalance());
+
+            break;
+        case 2: 
+            prt("Enter amount to withdraw:");
+                int withdrawAmount = Integer.parseInt(scan.nextLine());
+
+                    if (withdrawAmount <= 0) {
+                        prt("Please enter a positive amount.");
+                        break;
+                    }
+
+                    // Check for sufficient funds before withdrawal
+                    if (withdrawAmount > account.getBalance()) {
+                        prt("Insufficient funds. Your current balance is: " + account.getBalance());
+                    } else {
+                        account.setBalance(account.getBalance() - withdrawAmount);
+                        prt("Withdrawal successful! Your new balance is: " + account.getBalance());
+                    }
+            
+            break;
+        case 3: 
+            prt("Your current balance is: " + account.getBalance());
+            break;
+        case 4: // Exit
+            prt("Thank you for banking with us!");
+            return; 
+
+        default:
+            wrongDec("the correct numbers");
+    }
+        }while (decision != 4);
+            //much empty 
+}
+
+
+
+
+
+
+    //lazy to type out the error messages
+    public static void wrongDec(String a){
+        prt("Invalid decision. Please enter " + a );
     }
 
     //shortens the sys.out command
