@@ -10,8 +10,17 @@ public class AccountCreate {
         prt("---------------Create an Account---------------");
         prt("Name (Last Name, First Name):");   
         String name = scan.nextLine();
-        prt("Phone Number: ");   
-        String number = scan.nextLine();
+        String number = "";
+        while (true) {
+            prt("Phone Number:");
+            number = scan.nextLine();
+            
+            if (number.matches("\\d+")) {
+                break;
+            } else {
+                prt("Invalid phone number! Please enter only numbers.");
+            }
+        }
         String pin = createPin();
 
         return new AccountDetails(name, number, pin, 0);

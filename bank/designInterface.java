@@ -99,11 +99,20 @@ public class DesignInterface {
 }              
 
     public static void accountMenu(AccountDetails account) {
-        int decision;
-        prt("---------------Welcome to FTL Bank---------------" + "\n---------------Hello, " + account.getName() + "---------------" + "\n---------------What do you want to do today?---------------");
-        prt("[1] Deposit" + "\n[2] Withdraw"+ "\n[3] Check Balance"+ "\n[4] Exit/Logout");
-            decision = Integer.parseInt(scan.nextLine());
 
+        int decision = 0; //somehow doesnt work if i dont assign value
+        prt("---------------Welcome to FTL Bank---------------" + "\n---------------Hello, " + account.getName() + "---------------");
+        do{
+        prt("\n---------------What do you want to do today?---------------");
+        prt("[1] Deposit" + "\n[2] Withdraw"+ "\n[3] Check Balance"+ "\n[4] Edit Account Details" + "\n[5] Exit/Logout");
+        
+            try {
+                decision = Integer.parseInt(scan.nextLine());
+            } catch (NumberFormatException e) {
+                prt("Invalid input! Please enter a number.");
+                continue; 
+            }
+        
             switch (decision){
             case 1: // Deposit
                 prt("Enter amount to deposit:");
@@ -132,7 +141,66 @@ public class DesignInterface {
             case 3: 
                 prt("Your current balance is: " + account.getBalance());
                 break;
-            case 4: // Exit
+            case 4:
+                prt("---------------Edit Account Details---------------");
+                boolean editing = true;
+                    
+                    while (editing){
+                        prt("Choose information to edit:" + "\n[1] Name" + "\n[2] Phone Number" + 
+                        "\n[3] PIN" + "\n[4] Cancel");
+
+                        int infoEdit;
+                        try{
+                            infoEdit = Integer.parseInt(scan.nextLine());
+                        } catch (NumberFormatException e) {
+                            prt("Invalid input! Please enter a number.");
+                            continue;
+                        }
+                        switch (infoEdit) {
+                            case 1: 
+                                prt("Enter new name (Last Name, First Name):");
+                                String newName = scan.nextLine();
+                                account.name = newName; // Update locally
+                                accountManager.updateAccount(account.getNumber(), newName, account.number, account.pin);
+                                prt("Name updated successfully!");
+                                break;
+                
+                            case 2: 
+                                prt("Enter new phone number:");
+                                String newNumber = scan.nextLine();
+                                account.number = newNumber; // Update locally
+                                accountManager.updateAccount(account.getNumber(), account.name, newNumber, account.pin);
+                                prt("Phone number updated successfully!");
+                                break;
+                
+                            case 3: 
+                                prt("Create a new PIN (4 digits):");
+                                String newPin;
+                                while (true) {
+                                    newPin = scan.nextLine();
+                                    if (newPin.matches("\\d{4}")) {
+                                        break;
+                                    } else {
+                                        prt("Invalid PIN! Please enter exactly 4 digits.");
+                                    }
+                                }
+                                account.pin = newPin;
+                                accountManager.updateAccount(account.getNumber(), account.name, account.number, newPin);
+                                prt("PIN updated successfully!");
+                                break;
+                
+                            case 4:
+                                prt("Returning to Account menu...");
+                                editing = false;
+                                break;
+                
+                            default:
+                                prt("Invalid choice! Please select a valid option.");
+                                break;
+                    }
+                break;
+                }
+            case 5: // Exit
                 prt("Thank you for banking with us!");
                 prt("Do you wish to login again?" + "\n[1] Yes | [2] No");
 
@@ -151,6 +219,7 @@ public class DesignInterface {
             default:
                 wrongDec("the correct numbers");
     }
+    }while(decision != 5);
 }
 
 
