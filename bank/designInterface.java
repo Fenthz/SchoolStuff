@@ -7,19 +7,19 @@ public class DesignInterface {
 
     //first screen the user sees
     public static void welcomeScreen() {
-        try {
         prt("---------------Welcome to FTL Bank---------------");
         prt("Do you have an account?" + "\n[1] Yes | [2] No");
-        int decision = Integer.parseInt(scan.nextLine());
-
+        while (true){
+        try {
+            int decision = Integer.parseInt(scan.nextLine());
+        
         switch (decision){
         case 1: //yes
             loginScreen();
             break;
         case 2: //no
             while (true){
-                try{
-                    prt("Do you want to create an account?" + "\n[1] Yes | [2] No");
+                prt("Do you want to create an account?" + "\n[1] Yes | [2] No");
                     int a = Integer.parseInt(scan.nextLine());
                         switch(a){
                         case 1:
@@ -30,21 +30,17 @@ public class DesignInterface {
                             return;
                         default:    
                             wrongDec("1 or 2");
-                            
-               }
-                }catch(NumberFormatException e){
-                    wrongDec("1 or 2");
-               }
-
+                        }
             }
         default:
-            wrongDec("1 or 2");
-            welcomeScreen();
-        }
+            wrongDec("1 or 2"); // If the input is not 1 or 2, show an error
+
+            }
         } catch (NumberFormatException e) {
             wrongDec("1 or 2");
-            welcomeScreen();
+
         }
+    }
     }
 
       
@@ -67,22 +63,21 @@ public class DesignInterface {
         prt("Enter your account ID:");
         String accountId = scan.nextLine();
 
-
         AccountDetails account = accountManager.getAccount(accountId);
         
-        try {
             if (!accountManager.accountExists(accountId)) {
                 prt("Account not found. Try again?" + "\n [1] Yes | [2] No");
                 String decision = scan.nextLine();
-                switch (decision){
-                    case "1": 
-                        loginScreen();
-                    case "2": 
-                        welcomeScreen();
-                    default:
-                        wrongDec("the correct numbers");  
+
+                if ("1".equalsIgnoreCase(decision)) {
+                    continue; 
+                } else if ("2".equalsIgnoreCase(decision)) {
+                    welcomeScreen(); 
+                    return;
+                } else {
+                    wrongDec("1 or 2");
                 }
-            }else {
+            } else {
             prt("Enter your pin:");
             String userPin = scan.nextLine();
     
@@ -96,20 +91,17 @@ public class DesignInterface {
                     if (a >= 5) {
                         prt("Too many failed attempts. Exiting...");
                         welcomeScreen(); //Exit after 5 failed attempts
+                        return;
                 }
             }
         } 
-        }catch (Exception e) {
-            prt("Please enter a pin number");
-        }
     }
 }              
 
     public static void accountMenu(AccountDetails account) {
         int decision;
         prt("---------------Welcome to FTL Bank---------------" + "\n---------------Hello, " + account.getName() + "---------------" + "\n---------------What do you want to do today?---------------");
-        do {
-            prt("[1] Deposit" + "\n[2] Withdraw"+ "\n[3] Check Balance"+ "\n[4] Exit/Logout");
+        prt("[1] Deposit" + "\n[2] Withdraw"+ "\n[3] Check Balance"+ "\n[4] Exit/Logout");
             decision = Integer.parseInt(scan.nextLine());
 
             switch (decision){
@@ -143,17 +135,22 @@ public class DesignInterface {
             case 4: // Exit
                 prt("Thank you for banking with us!");
                 prt("Do you wish to login again?" + "\n[1] Yes | [2] No");
-                String a = scan.nextLine();
-                    if ("1".equalsIgnoreCase(a)){
+
+                while (true) {
+                    String a = scan.nextLine();
+                    if ("1".equalsIgnoreCase(a)) {
                         welcomeScreen();
-                    } else{
-                        break; 
+                        return; 
+                    } else if ("2".equalsIgnoreCase(a)) {
+                        return;
+                    } else {
+                        wrongDec("the correct numbers");
                     }
+                }
+
             default:
                 wrongDec("the correct numbers");
     }
-        }while (decision != 4);
-            //much empty 
 }
 
 
