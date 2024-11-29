@@ -118,7 +118,6 @@ public class DesignInterface {
                         break;
                     }
 
-                    // Check for sufficient funds before withdrawal
                     if (withdrawAmount > account.getBalance()) {
                         prt("Insufficient funds. Your current balance is: " + account.getBalance());
                     } else {
