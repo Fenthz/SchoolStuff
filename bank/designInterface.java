@@ -204,20 +204,22 @@ public class DesignInterface {
                 prt("Thank you for banking with us!");
                 prt("Do you wish to login again?" + "\n[1] Yes | [2] No");
 
-                while (true) {
+                boolean wantExit = false;
+                while (!wantExit) {
                     String a = scan.nextLine();
+            
+                    //exits loop
                     if ("1".equalsIgnoreCase(a)) {
-                        welcomeScreen();
-                        return; 
-                    } else if ("2".equalsIgnoreCase(a)) {
+                        welcomeScreen(); 
+                        wantExit = true; 
                         return;
+                    } else if ("2".equalsIgnoreCase(a)) {
+                        wantExit = true; 
                     } else {
                         wrongDec("the correct numbers");
                     }
                 }
-
-            default:
-                wrongDec("the correct numbers");
+                break;  
     }
     }while(decision != 5);
 }
